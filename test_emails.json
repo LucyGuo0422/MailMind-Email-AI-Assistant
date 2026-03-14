@@ -1,0 +1,30 @@
+[
+  {
+    "email_id": "test_001",
+    "sender": "john.smith@acme.com",
+    "subject": "Contract renewal — need your signature by Friday",
+    "body": "Hi,\n\nHope you're doing well. I wanted to follow up on the contract renewal we discussed last week. We need your signature on the updated terms before Friday EOD to avoid a service interruption.\n\nI've attached the revised contract. Key changes are on pages 3 and 7 (pricing update and SLA adjustment).\n\nPlease let me know if you have any questions.\n\nBest,\nJohn",
+    "received_at": "Thu, 13 Mar 2026 09:15:00 -0700"
+  },
+  {
+    "email_id": "test_002",
+    "sender": "newsletter@techdigest.io",
+    "subject": "This week in AI: GPT-5 rumors, open source wins, and more",
+    "body": "Welcome to this week's Tech Digest!\n\n- OpenAI reportedly training GPT-5 on synthetic data\n- Meta releases Llama 4 with 1M token context\n- EU AI Act enforcement begins next quarter\n- New study: LLMs struggle with multi-step reasoning\n\nRead the full stories at techdigest.io.\n\nUnsubscribe | Manage preferences",
+    "received_at": "Thu, 13 Mar 2026 08:00:00 -0700"
+  },
+  {
+    "email_id": "test_003",
+    "sender": "deals@shopify-store.com",
+    "subject": "🔥 48-hour flash sale — 40% off everything!",
+    "body": "DON'T MISS OUT!\n\nFor the next 48 hours only, get 40% off your entire order. Use code FLASH40 at checkout.\n\nShop now → store.com/sale\n\nOffers ends Sunday midnight. Cannot be combined with other discounts.",
+    "received_at": "Thu, 13 Mar 2026 07:30:00 -0700"
+  },
+  {
+    "email_id": "test_004",
+    "sender": "nigerian.prince99@freemail.xyz",
+    "subject": "URGENT: Confidential business proposal — $4.5M transfer",
+    "body": "Dear Friend,\n\nI am Prince Emmanuel, son of late King Bello of Nigeria. I have inherited $4.5 million USD but cannot access it due to government restrictions. I need a trusted foreign partner to transfer these funds. You will receive 30% commission.\n\nGod bless,\nPrince Emmanuel",
+    "received_at": "Thu, 13 Mar 2026 06:45:00 -0700"
+  }
+]
