@@ -10,18 +10,6 @@ A multi-agent email assistant built with LangGraph that reads your Gmail, classi
 - **Draft-only mode** — never auto-sends; approved replies are saved to Gmail Drafts
 - **Swappable models** — all LLMs configured via `.env`, routed through OpenRouter
 
-## Overview
-
-1. **Ingest** — fetches N unread emails from Gmail and extracts sender, subject, body, and date.
-2. **Filter** — classifies each email into `action-required`, `informational`, `promotional`, or `spam` using an LLM.
-3. **Summarize** — generates a 2–3 sentence summary for each non-spam/promo email using an LLM.
-4. **Select** — displays all emails with their category and summary, and asks you to pick one to reply to.
-5. **Generate Reply** — drafts a polite, concise reply for the selected email using an LLM.
-6. **Human Review** — shows the draft and lets you approve, edit, or reject (regenerates until you approve).
-7. **Save Draft** — saves the approved reply to your Gmail Drafts folder, never sends automatically.
-
----
-
 ## Architecture
 
 ```
@@ -30,8 +18,8 @@ filter → summarize → select → generate_reply → human_review → save_dra
 
 | Stage | What happens |
 |---|---|
-| `filter` | Classifies all fetched emails (action-required / informational / promotional / spam) |
-| `summarize` | Summarizes all non-spam/promo emails in 2–3 sentences |
+| `filter` | Classifies all fetched emails into `action-required`, `informational`, `promotional`, or `spam` |
+| `summarize` | Summarizes all non-spam/promo emails |
 | `select` | Displays the full list with categories and summaries; you pick one to reply to |
 | `generate_reply` | AI drafts a reply for the selected email |
 | `human_review` | You approve, edit, or reject (regenerates) until satisfied |
@@ -81,11 +69,14 @@ Required OAuth scopes:
 ## Usage
 
 ```bash
-# Fetch 10 unread emails (default)
+# Fetch emails from Gmail (default 10)
 python main.py
 
 # Fetch a specific number
 python main.py --fetch 5
+
+# Run with local test emails (no Gmail needed)
+python main.py --test
 ```
 
 Example session:
@@ -93,18 +84,18 @@ Example session:
 ```
 Your name (used as email signature): Alex
 
-Fetching 5 unread emails...
+Fetching 5 emails...
 
-=================================================================
-  #    CATEGORY    SUBJECT
-=================================================================
-  1    [ACTION]    Contract renewal — need your signature by Fri
-        → John needs your signature on updated contract terms...
-  2    [INFO]      This week in AI: GPT-5 rumors, open source...
-        → A newsletter covering recent AI developments...
-  3    [PROMO]     🔥 48-hour flash sale — 40% off everything!
-  4    [SPAM]      URGENT: Confidential business proposal
-=================================================================
+===========================================================================
+  #    CATEGORY    SUBJECT                                        SENDER
+===========================================================================
+  1    [ACTION]    Contract renewal — need your signature by Fri  john.smith@acme.com
+        → John needs your signature on updated contract terms by Friday EOD.
+  2    [INFO]      This week in AI: GPT-5 rumors, open source...  newsletter@techdigest.io
+        → A newsletter covering recent AI and open source developments.
+  3    [PROMO]     🔥 48-hour flash sale — 40% off everything!    deals@shopify-store.com
+  4    [SPAM]      URGENT: Confidential business proposal          nigerian.prince99@freemail.xyz
+===========================================================================
 
 Which email do you want to reply to? (enter number): 1
 
@@ -118,28 +109,36 @@ Hi John, thank you for the reminder...
 - **E** — lets you type your own reply before saving
 - **R** — regenerates the draft (loops until you approve)
 
+## Testing without Gmail
+
+To run the pipeline without Gmail OAuth, use the `--test` flag. This loads emails from `test_emails.json` instead:
+
+```bash
+python main.py --test
+```
+
+`test_emails.json` contains four sample emails covering all categories (action-required, informational, promotional, spam). Edit the file to add your own test cases.
+
 ## Project Structure
 
 ```
 MailMind/
 ├── main.py                  # Entry point
-├── config.py                # API keys, model config, logging setup
-├── test_pipeline.py         # Run the pipeline with test_emails.json (no Gmail needed)
+├── config.py                # API keys and model config
 ├── test_emails.json         # Sample emails for local testing
 ├── graph/
 │   ├── state.py             # EmailState TypedDict
 │   └── graph.py             # LangGraph StateGraph
-├── agents/                  # LLM-powered nodes (each contains its own prompt)
+├── agents/                  # LLM-powered nodes
 │   ├── filter_agent.py      # Classifies emails into 4 categories
-│   ├── summarize_agent.py   # Generates 2–3 sentence summary
+│   ├── summarize_agent.py   # Generates summary
 │   └── response_agent.py    # Drafts reply
-├── interaction/             # Human-in-the-loop CLI nodes (no LLM)
+├── interaction/             # Human-in-the-loop CLI nodes
 │   ├── select_node.py       # Displays email list, captures user selection
 │   └── review_node.py       # Approve / edit / reject draft
 ├── tools/
-│   ├── gmail_reader.py      # OAuth + fetch unread emails
+│   ├── gmail_reader.py      # OAuth + fetch emails
 │   └── gmail_sender.py      # Save approved reply to Gmail Drafts
-├── logs/                    # app.log output
 └── credentials/             # OAuth credentials (gitignored)
 ```
 
@@ -148,11 +147,7 @@ MailMind/
 | Agent | Model (via .env) | Purpose |
 |---|---|---|
 | Filter | `DEFAULT_FILTER_MODEL` | Classify email category |
-| Summarize | `DEFAULT_FILTER_MODEL` | 2–3 sentence summary |
+| Summarize | `DEFAULT_FILTER_MODEL` | Generate summary |
 | Response | `DEFAULT_RESPONSE_MODEL` | Draft reply |
 
 Prompts live directly in each agent file alongside the code that uses them.
-
-## Logs
-
-Pipeline activity is logged to `logs/app.log` and stdout, including email IDs, classification decisions, and draft IDs.

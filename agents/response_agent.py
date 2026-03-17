@@ -1,9 +1,6 @@
 import re
-import logging
 from config import client, RESPONSE_MODEL
 from graph.state import EmailState
-
-logger = logging.getLogger(__name__)
 
 PROMPT = """You are a professional email assistant. Draft a polite, concise reply.
 
@@ -43,11 +40,5 @@ def _draft_reply(email: dict, user_name: str) -> str:
 
 def response_node(state: EmailState) -> EmailState:
     email = state["current_email"]
-    try:
-        email["draft_reply"] = _draft_reply(email, state["user_name"])
-    except Exception as e:
-        logger.warning(f"Response agent error: {e}")
-        email["draft_reply"] = ""
-
-    logger.info(f"Draft reply generated for {email['email_id']}")
+    email["draft_reply"] = _draft_reply(email, state["user_name"])
     return state

@@ -1,12 +1,9 @@
 import base64
-import logging
 from pathlib import Path
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-
-logger = logging.getLogger(__name__)
 
 SCOPES = [
     "https://www.googleapis.com/auth/gmail.readonly",
@@ -47,7 +44,7 @@ def _decode_body(payload) -> str:
 def fetch_emails(max_results: int = 10) -> list[dict]:
     service = _get_service()
     results = service.users().messages().list(
-        userId="me", labelIds=["INBOX", "UNREAD"], maxResults=max_results
+        userId="me", labelIds=["INBOX"], maxResults=max_results
     ).execute()
 
     messages = results.get("messages", [])

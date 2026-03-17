@@ -1,9 +1,6 @@
 import json
-import logging
 from config import client, FILTER_MODEL
 from graph.state import EmailState
-
-logger = logging.getLogger(__name__)
 
 PROMPT = """Classify the following email into exactly one category:
 - action-required
@@ -37,11 +34,9 @@ def filter_node(state: EmailState) -> EmailState:
                     raw = raw[4:]
             data = json.loads(raw.strip())
             category = data["category"]
-        except Exception as e:
-            logger.warning(f"Filter error for {email['email_id']}: {e} — defaulting to informational")
+        except Exception:
             category = "informational"
 
         email["category"] = category
-        logger.info(f"Email {email['email_id']} classified as {category}")
 
     return state

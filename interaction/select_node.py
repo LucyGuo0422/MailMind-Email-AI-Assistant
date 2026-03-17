@@ -1,7 +1,4 @@
-import logging
 from graph.state import EmailState
-
-logger = logging.getLogger(__name__)
 
 CATEGORY_LABEL = {
     "action-required": "[ACTION]",
@@ -14,15 +11,15 @@ CATEGORY_LABEL = {
 def select_node(state: EmailState) -> EmailState:
     emails = state["emails"]
 
-    print("\n" + "="*65)
-    print(f"  {'#':<4} {'CATEGORY':<10}  SUBJECT")
-    print("="*65)
+    print("\n" + "="*75)
+    print(f"  {'#':<4} {'CATEGORY':<10}  {'SUBJECT':<45}  SENDER")
+    print("="*75)
     for i, email in enumerate(emails, start=1):
         label = CATEGORY_LABEL.get(email.get("category", ""), "[?]     ")
-        print(f"  {i:<4} {label}  {email['subject'][:45]}")
+        print(f"  {i:<4} {label}  {email['subject'][:45]:<45}  {email.get('sender', 'Unknown')}")
         if email.get("summary"):
-            print(f"        → {email['summary'][:80]}")
-    print("="*65)
+            print(f"        → {email['summary'][:300]}")
+    print("="*75)
 
     while True:
         raw = input("\nWhich email do you want to reply to? (enter number): ").strip()
@@ -36,5 +33,4 @@ def select_node(state: EmailState) -> EmailState:
             continue
 
         state["current_email"] = selected
-        logger.info(f"User selected email {selected['email_id']} for reply")
         return state
