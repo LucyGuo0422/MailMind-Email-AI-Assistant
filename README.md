@@ -41,6 +41,7 @@ class EmailState(TypedDict):
 
 ```bash
 pip install -r requirements.txt
+mkdir -p logs
 ```
 
 ### 2. Configure environment
@@ -50,7 +51,7 @@ Fill in `.env` with your OpenRouter API key:
 ```
 OPENROUTER_API_KEY=sk-or-...
 GMAIL_MAX_FETCH=10
-DEFAULT_FILTER_MODEL=openai/gpt-4o-mini
+DEFAULT_FILTER_MODEL=mistralai/mistral-7b-instruct
 DEFAULT_RESPONSE_MODEL=openai/gpt-4o-mini
 ```
 
@@ -139,7 +140,8 @@ MailMind/
 ├── tools/
 │   ├── gmail_reader.py      # OAuth + fetch emails
 │   └── gmail_sender.py      # Save approved reply to Gmail Drafts
-└── credentials/             # OAuth credentials (gitignored)
+├── credentials/             # OAuth credentials (gitignored)
+└── logs/                    # Runtime logs (gitignored)
 ```
 
 ## Models
